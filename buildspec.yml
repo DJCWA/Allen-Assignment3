@@ -3,32 +3,32 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo "Logging in to Amazon ECR..."
-      - ACCOUNT_ID=$(aws sts get-caller-identity --query account --output text)
-      - REGION=ca-central-1
-      - ECR_REGISTRY=${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com
-      - ECR_REPO=${ECR_REGISTRY}/allen-assignment3
-      - echo "ECR registry: ${ECR_REGISTRY}"
-      - echo "ECR repo: ${ECR_REPO}"
-      - aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+      - "echo Logging in to Amazon ECR..."
+      - "ACCOUNT_ID=$(aws sts get-caller-identity --query account --output text)"
+      - "REGION=ca-central-1"
+      - "ECR_REGISTRY=${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com"
+      - "ECR_REPO=${ECR_REGISTRY}/allen-assignment3"
+      - "echo ECR registry: ${ECR_REGISTRY}"
+      - "echo ECR repo: ${ECR_REPO}"
+      - "aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}"
 
   build:
     commands:
-      - echo "Build started on $(date)"
-      - echo "Building Docker image..."
-      - docker build -t allen-assignment3:latest .
-      - echo "Tagging Docker image for ECR..."
-      - docker tag allen-assignment3:latest ${ECR_REPO}:latest
+      - "echo Build started on $(date)"
+      - "echo Building Docker image..."
+      - "docker build -t allen-assignment3:latest ."
+      - "echo Tagging Docker image for ECR..."
+      - "docker tag allen-assignment3:latest ${ECR_REPO}:latest"
 
   post_build:
     commands:
-      - echo "Build completed on $(date)"
-      - echo "Pushing image to ECR..."
-      - docker push ${ECR_REPO}:latest
-      - echo "Creating imagedefinitions.json for ECS deploy..."
-      - printf '[{"name":"allen-assignment3-container","imageUri":"%s"}]\n' "${ECR_REPO}:latest" > imagedefinitions.json
-      - echo "imagedefinitions.json contents:"
-      - cat imagedefinitions.json
+      - "echo Build completed on $(date)"
+      - "echo Pushing image to ECR..."
+      - "docker push ${ECR_REPO}:latest"
+      - "echo Creating imagedefinitions.json for ECS deploy..."
+      - "printf '[{\"name\":\"allen-assignment3-container\",\"imageUri\":\"%s\"}]\\n' \"${ECR_REPO}:latest\" > imagedefinitions.json"
+      - "echo imagedefinitions.json contents:"
+      - "cat imagedefinitions.json"
 
 artifacts:
   files:
