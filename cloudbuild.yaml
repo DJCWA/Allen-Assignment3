@@ -1,13 +1,10 @@
 steps:
-  # Step 1: Build Docker image from your Dockerfile
   - name: "gcr.io/cloud-builders/docker"
     args: ["build", "-t", "${_IMAGE_URL}", "."]
 
-  # Step 2: Push the image to Artifact Registry
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "${_IMAGE_URL}"]
 
-  # Step 3: Deploy or update the Cloud Run service
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: "gcloud"
     args:
@@ -25,6 +22,9 @@ steps:
       - "--allow-unauthenticated"
       - "--vpc-connector"
       - "allen-assignment3-connect"
+      # OPTIONAL if you want ALL egress through NAT:
+      # - "--vpc-egress"
+      # - "all-traffic"
       - "--min-instances"
       - "1"
       - "--max-instances"
