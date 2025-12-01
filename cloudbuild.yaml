@@ -1,10 +1,13 @@
 steps:
+  # Step 1: Build Docker image from your Dockerfile
   - name: "gcr.io/cloud-builders/docker"
     args: ["build", "-t", "${_IMAGE_URL}", "."]
 
+  # Step 2: Push the image to Artifact Registry
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "${_IMAGE_URL}"]
 
+  # Step 3: Deploy or update the Cloud Run service
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: "gcloud"
     args:
@@ -23,7 +26,7 @@ steps:
       - "--vpc-connector"
       - "allen-assignment3-connect"
       - "--min-instances"
-      - "2"
+      - "1"
       - "--max-instances"
       - "4"
       - "--port"
@@ -33,7 +36,7 @@ images:
   - "${_IMAGE_URL}"
 
 substitutions:
-  _IMAGE_URL: "northamerica-northeast1-docker.pkg.dev/$PROJECT_ID/allen-assignment3/allen-assignment3:latest"
+  _IMAGE_URL: "northamerica-northeast1-docker.pkg.dev/lofty-inn-259017/allen-assignment3/allen-assignment3:latest"
 
 options:
   logging: CLOUD_LOGGING_ONLY
